@@ -8,7 +8,6 @@
 		- Ask for mileage
 		- Take theta values from file
 	- Model
-		- Save theta values in file
 
 Bonus
 - Various direct plot visualization

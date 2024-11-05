@@ -1,6 +1,7 @@
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
+import json
 
 class Model:
 	def __init__(self, data_file):
@@ -76,7 +77,10 @@ class Model:
 		plt.legend()
 		plt.grid(True)
 		plt.show(block=True)
-
+	
+	def save_coefficients(self):
+		with open('model_coeffs.json', 'w') as file:
+			json.dump({"theta0": self.theta0, "theta1": self.theta1}, file)
 
 def main():
 	model = Model("data.csv")	
@@ -85,7 +89,7 @@ def main():
 	print(f"Gradient descent: theta0 = {model.theta0}, theta1 = {model.theta1}")
 	print(f"Mean squared error after regression: {model.compute_MSE()}")
 	model.plot_results()
-	# model.save_coefficients()
+	model.save_coefficients()
 
 if __name__ == "__main__":
 	main()

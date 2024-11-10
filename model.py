@@ -63,7 +63,7 @@ class Model:
 				derivative_t1 += ((t0 + t1 * X[i]) - Y[i]) * X[i]
 			t0 = t0 - (learning_rate) * (derivative_t0 * (2 / self.m))
 			t1 = t1 - (learning_rate) * (derivative_t1 * (2 / self.m))
-			if (j % 10 == 0):
+			if (j % 10 == 0 or j < 10 ):
 				self.plot_results(t0, t1, j)
 
 		self.theta0 = t0
@@ -90,7 +90,7 @@ class Model:
 
 		# Subplot #2 :
 		ax = plt.subplot(1, 2, 2, projection='3d')
-		X = np.arange(0.0, 1.0, 0.1) #theta0
+		X = np.arange(0, 1.2, 0.1) #theta0
 		Y = np.arange(-1, 0.2, 0.1) #theta1
 		X, Y = np.meshgrid(X, Y)
 		Z = self.compute_MSE(X, Y)
@@ -98,12 +98,17 @@ class Model:
 		self.t0_plots.append(t0)
 		self.t1_plots.append(t1)
 		self.error_plots.append(self.compute_MSE(t0, t1))
-		ax.scatter(self.t0_plots, self.t1_plots, self.error_plots, color='red', s=100, edgecolors='black', alpha=1.0)
+		ax.scatter(self.t0_plots, self.t1_plots, self.error_plots, color='red', s=10, edgecolors='black', alpha=1.0)
 		ax.set_xlabel('b')
 		ax.set_ylabel('m')
 		ax.set_zlabel('Error')
 		ax.set_title('Error Surface')
 		ax.grid(True)
+
+		# ax.set_xlim([0, 1])  # Limite pour theta0 (b)
+		# ax.set_ylim([-1, 0.2])  # Limite pour theta1 (m)
+		# ax.set_zlim([0, 0.5])  # Limite pour l'erreur MSE (z)
+
 
 		plt.suptitle("Iteration " + str(iteration))
 		plt.pause(0.1)
@@ -113,9 +118,9 @@ class Model:
 			json.dump({"theta0": self.theta0, "theta1": self.theta1}, file)
 
 def main():
-	model = Model("data.csv")	
+	model = Model("data3.csv")	
 	print(f"Mean squared error before regression: {model.compute_MSE(model.theta0, model.theta1)}")
-	model.gradient_descent(300, 0.05)
+	model.gradient_descent(300, 0.1)
 	print(f"Gradient descent: theta0 (b) = {model.theta0}, theta1 (m) = {model.theta1}")
 	print(f"Mean squared error after regression: {model.compute_MSE(model.theta0, model.theta1)}")
 	# model.plot_results()

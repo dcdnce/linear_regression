@@ -12,6 +12,7 @@
 
 Bonus
 - Various direct plot visualization
-	- Current prediction line (with t0, t1, iteration nb)
-	- Current MSE (in 3D?!(t0, t1, error))
+	- Current MSE 
+		- b & m range selon b min et max m min et max
+		- refactor
 - Precision of model

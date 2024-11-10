@@ -38,12 +38,15 @@ class Model:
 	
 	def init_plots(self):
 		plt.ion()
-		self.figure = plt.figure(figsize=(10, 6))
+		self.figure = plt.figure(figsize=(16, 6))
+		self.t0_plots = []
+		self.t1_plots = []
+		self.error_plots = []
 
-	def compute_MSE(self):
+	def compute_MSE(self, t0, t1):
 		mean_squared_error = 0
 		for i in range(self.m):
-			mean_squared_error += ((self.theta0 + self.theta1 * self.mileage_normalized[i]) - self.price_normalized[i]) ** 2
+			mean_squared_error += ((t0 + t1 * self.mileage_normalized[i]) - self.price_normalized[i]) ** 2
 		return (mean_squared_error / float(self.m)) # same as * (1 / m)
 
 	def gradient_descent(self, iteration_number, learning_rate):
@@ -67,8 +70,11 @@ class Model:
 		self.theta1 = t1
 
 	def plot_results(self, t0, t1, iteration):
-		plt.cla()
+		plt.clf()
 
+		# Subplot #1 :
+		plt.subplot(1, 2, 1)
+		plt.title(f"m = {t1:.4f} \n b = {t0:.4f}")
 		# Data entry
 		plt.scatter(self.mileage_normalized, self.price_normalized, color='blue', label='Entry data')
 		# Prediction line
@@ -78,12 +84,28 @@ class Model:
 		# Shifting apparent scale
 		plt.xticks(ticks=np.linspace(0, 1, 5), labels=[f"{int(i * (max(self.mileage) - min(self.mileage)) + min(self.mileage))}" for i in np.linspace(0, 1, 5)])
 		plt.yticks(ticks=np.linspace(0, 1, 5), labels=[f"{int(i * (max(self.price) - min(self.price)) + min(self.price))}" for i in np.linspace(0, 1, 5)])
-
 		plt.xlabel('Mileage')
 		plt.ylabel('Price')
-		plt.title("Iteration " + str(iteration))
-		plt.legend()
 		plt.grid(True)
+
+		# Subplot #2 :
+		ax = plt.subplot(1, 2, 2, projection='3d')
+		X = np.arange(0.0, 1.0, 0.1) #theta0
+		Y = np.arange(-1, 0.2, 0.1) #theta1
+		X, Y = np.meshgrid(X, Y)
+		Z = self.compute_MSE(X, Y)
+		ax.plot_surface(X, Y, Z, cmap='viridis', edgecolor='none', alpha=0.5)
+		self.t0_plots.append(t0)
+		self.t1_plots.append(t1)
+		self.error_plots.append(self.compute_MSE(t0, t1))
+		ax.scatter(self.t0_plots, self.t1_plots, self.error_plots, color='red', s=100, edgecolors='black', alpha=1.0)
+		ax.set_xlabel('b')
+		ax.set_ylabel('m')
+		ax.set_zlabel('Error')
+		ax.set_title('Error Surface')
+		ax.grid(True)
+
+		plt.suptitle("Iteration " + str(iteration))
 		plt.pause(0.1)
 	
 	def save_coefficients(self):
@@ -92,10 +114,10 @@ class Model:
 
 def main():
 	model = Model("data.csv")	
-	print(f"Mean squared error before regression: {model.compute_MSE()}")
-	model.gradient_descent(1000, 0.1)
-	print(f"Gradient descent: theta0 = {model.theta0}, theta1 = {model.theta1}")
-	print(f"Mean squared error after regression: {model.compute_MSE()}")
+	print(f"Mean squared error before regression: {model.compute_MSE(model.theta0, model.theta1)}")
+	model.gradient_descent(300, 0.05)
+	print(f"Gradient descent: theta0 (b) = {model.theta0}, theta1 (m) = {model.theta1}")
+	print(f"Mean squared error after regression: {model.compute_MSE(model.theta0, model.theta1)}")
 	# model.plot_results()
 	model.save_coefficients()
 	plt.ioff()

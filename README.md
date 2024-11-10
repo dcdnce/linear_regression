@@ -1,7 +1,7 @@
 # linear_regression
 
 #todo
-- Add learning rate
+- Note 3d graph making
 - Two program
 	- Predict (class and file)
 		- Ask for mileage

@@ -1,7 +1,6 @@
 # linear_regression
 
 #todo
-- Note 3d graph making
 - Two program
 	- Predict (class and file)
 		- Ask for mileage
@@ -9,10 +8,10 @@
 	- Model
 		- Input (iterations, learning_rate)
 		- Option to stop after n iterations when MSE (or coeffs?) is already optimal
+- Auto initialization with pip requirement and all
 
 Bonus
 - Various direct plot visualization
 	- Current MSE 
-		- b & m range selon b min et max m min et max
 		- refactor
 - Precision of model

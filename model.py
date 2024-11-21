@@ -1,3 +1,4 @@
+import sys
 import csv
 import matplotlib.pyplot as plt
 import numpy as np
@@ -27,9 +28,10 @@ class Model:
 						mileage.append(mileage_value)
 						price.append(price_value)
 					except ValueError:
-						print(f"Non numeric value ignored : {row}")
+						print(f"Data file: Non numeric value ignored : {row}")
 		except Exception as e:
-			print(f"An error occurred: {e}")
+			print(f"An error occurred: {e}\nExiting")
+			sys.exit(1)
 		
 		return [mileage, price]
 
@@ -116,15 +118,42 @@ class Model:
 			json.dump({"theta0": self.theta0, "theta1": self.theta1}, file)
 
 def main():
-	model = Model("data3.csv")	
+	data_file_name, iterations, learning_rate = user_input()
+
+	model = Model(data_file_name)
 	print(f"Mean squared error before regression: {model.compute_MSE(model.theta0, model.theta1)}")
-	model.gradient_descent(500, 0.1)
+	model.gradient_descent(iterations, learning_rate)
 	print(f"Gradient descent: theta0 (b) = {model.theta0}, theta1 (m) = {model.theta1}")
 	print(f"Mean squared error after regression: {model.compute_MSE(model.theta0, model.theta1)}")
 	# model.plot_results()
 	model.save_coefficients()
 	plt.ioff()
 	plt.show()
+
+def user_input():
+	if len(sys.argv) == 1:
+		print("Usage: python model.py -f <file> -i <iterations> -l <learning_rate>")
+	data_file_name = "data.csv"
+	iterations = 500
+	learning_rate = 0.1
+	args = sys.argv[1:]
+	try:
+		for i in range(0, len(args), 2):
+			if args[i] == "-f":
+				data_file_name = args[i + 1]
+			elif args[i] == "-i":
+				iterations = int(args[i + 1])
+			elif args[i] == "-l":
+				learning_rate = float(args[i + 1])
+			else:
+				print(f"Unknown argument: {args[i]}")
+				print("Usage: python model.py -f <file> -i <iterations> -l <learning_rate>")
+	except Exception as e:
+		print(f"An error occurred: {e}\nExiting")
+		sys.exit(1)
+	print(f"Data file: {data_file_name}\niterations : {iterations}\nlearning rate: {learning_rate}")
+	return data_file_name, iterations, learning_rate
+
 
 if __name__ == "__main__":
 	main()

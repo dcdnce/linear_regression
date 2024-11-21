@@ -10,7 +10,4 @@
 - Auto initialization with pip requirement and all
 
 Bonus
-- Various direct plot visualization
-	- Current MSE 
-		- current error
 - Precision of model

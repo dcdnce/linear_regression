@@ -95,6 +95,7 @@ class Model:
 		self.b_values.append(t0)
 		self.m_values.append(t1)
 		self.error_values.append(self.compute_MSE(t0, t1))
+		ax.set_title(f"Error: {self.error_values[-1]:.5f}")
 		# Errors display through the iterations
 		ax.scatter(self.b_values, self.m_values, self.error_values, color='red', s=10, edgecolors='black', alpha=1.0)
 		# Error surface
@@ -107,7 +108,6 @@ class Model:
 		ax.set_xlabel('b')
 		ax.set_ylabel('m')
 		ax.set_zlabel('Error')
-		ax.set_title('Error Surface')
 		ax.grid(True)
 
 		plt.suptitle("Iteration " + str(iteration))

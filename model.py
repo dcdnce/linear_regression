@@ -143,7 +143,7 @@ def main():
 
 def user_input():
 	if len(sys.argv) == 1:
-		print("Usage: python model.py -f <file> -i <iterations> -l <learning_rate>")
+		print("Usage: python3 model.py -f <file> -i <iterations> -l <learning_rate>")
 	data_file_name = "data.csv"
 	iterations = 500
 	learning_rate = 0.1
@@ -158,7 +158,7 @@ def user_input():
 				learning_rate = float(args[i + 1])
 			else:
 				print(f"Unknown argument: {args[i]}")
-				print("Usage: python model.py -f <file> -i <iterations> -l <learning_rate>")
+				print("Usage: python3 model.py -f <file> -i <iterations> -l <learning_rate>")
 	except Exception as e:
 		print(f"An error occurred: {e}\nExiting")
 		sys.exit(1)

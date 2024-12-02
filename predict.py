@@ -45,11 +45,30 @@ class Predict:
         return (min + x * (max - min))
 
 def main():
+    miles = user_input()
+
     predict = Predict()
     predict.parse_coeffs_file("model_coeffs.json")
-    predict.predict(380000)
+    predict.predict(miles)
     print(f"Prediction : \n\tNormal : {predict.prediction}\n\tNormalized : {predict.prediction_normalized}")
 
+def user_input():
+    if len(sys.argv) > 2:
+        print("Too many arguments\nExiting")
+        print("Usage: python3 predict.py <miles>")
+        sys.exit(1)
+
+    if len(sys.argv) == 1:
+        print("Usage: python3 predict.py <miles>")
+        return 150000
+
+    try:
+        miles = float(sys.argv[1])
+    except Exception as e:
+        print(f"An error occurred: {e}\nExiting")
+        sys.exit(1)
+    
+    return miles
 
 if __name__ == "__main__":
     main()

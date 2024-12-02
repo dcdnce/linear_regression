@@ -33,6 +33,8 @@ class Model:
 			print(f"An error occurred: {e}\nExiting")
 			sys.exit(1)
 		
+		print(f"Data file: mileage (min,max) : {min(mileage)}, {max(mileage)}")
+		print(f"Data file: price (min,max) : {min(price)}, {max(price)}")
 		return [mileage, price]
 
 	def normalize_array(self, a):
@@ -115,7 +117,16 @@ class Model:
 	
 	def save_coefficients(self):
 		with open('model_coeffs.json', 'w') as file:
-			json.dump({"theta0": self.theta0, "theta1": self.theta1}, file)
+			json.dump(
+				{
+					"theta0": self.theta0, 
+					"theta1": self.theta1,
+					"price_min": min(self.price),
+					"price_max": max(self.price),
+					"mileage_min": min(self.mileage),
+					"mileage_max": max(self.mileage),
+				}, 
+				file)
 
 def main():
 	data_file_name, iterations, learning_rate = user_input()

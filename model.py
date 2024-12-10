@@ -94,8 +94,7 @@ class Model:
 
 		self.theta0 = t0
 		self.theta1 = t1
-
-
+	
 	def plot_results(self, t0, t1, iteration):
 		plt.clf()
 

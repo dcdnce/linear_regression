@@ -58,6 +58,8 @@ class Model:
 		t1 = 0
 		X = self.mileage_normalized
 		Y = self.price_normalized
+		previous_mse = float('inf')
+		patience_counter = 0 # tracking consecutive insignificant improvements
 
 		for j in range(iteration_number+1):
 			derivative_t0 = 0
@@ -65,13 +67,28 @@ class Model:
 			for i in range(self.m):
 				derivative_t0 += ((t0 + t1 * X[i]) - Y[i])
 				derivative_t1 += ((t0 + t1 * X[i]) - Y[i]) * X[i]
+
 			t0 = t0 - (learning_rate) * (derivative_t0 * (2 / self.m))
 			t1 = t1 - (learning_rate) * (derivative_t1 * (2 / self.m))
+
+			# Compute MSE and check for early stopping
+			current_mse = self.compute_MSE(t0, t1)
+			if abs(previous_mse - current_mse) < 1e-10:
+				patience_counter += 1
+				if patience_counter >= 5:
+					print(f"Early stopping at iteration {j} with MSE: {current_mse}, tolerance : 1e-10, patience_counter : 5")
+					break
+			else:
+				patience_counter = 0
+			previous_mse = current_mse
+
+			# Live plotting
 			if ((j % 10 == 0 or j < 10)):
 				self.plot_results(t0, t1, j)
 
 		self.theta0 = t0
 		self.theta1 = t1
+
 
 	def plot_results(self, t0, t1, iteration):
 		plt.clf()
@@ -97,7 +114,8 @@ class Model:
 		self.b_values.append(t0)
 		self.m_values.append(t1)
 		self.error_values.append(self.compute_MSE(t0, t1))
-		ax.set_title(f"Error: {self.error_values[-1]:.5f}")
+		# ax.set_title(f"Error: {self.error_values[-1]:.5f}")
+		ax.set_title(f"Error: {self.error_values[-1]}")
 		# Errors display through the iterations
 		ax.scatter(self.b_values, self.m_values, self.error_values, color='red', s=10, edgecolors='black', alpha=1.0)
 		# Error surface

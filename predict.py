@@ -23,12 +23,7 @@ class Predict:
             self.price_max = data['price_max']
         except Exception as e:
             print(f"Coeffs file: An error occurred: {e}")
-            self.theta0 = 0
-            self.theta1 = 0
-            self.price_min = 0
-            self.price_max = 0
-            self.mileage_min = 0
-            self.mileage_max = 0
+            sys.exit(1)
 
         print(f"Coefficients for prediction :\n\ttheta0 = {self.theta0}\n\ttheta1 = {self.theta1}")
 
@@ -50,7 +45,7 @@ def main():
     predict = Predict()
     predict.parse_coeffs_file("model_coeffs.json")
     predict.predict(miles)
-    print(f"Prediction : \n\tNormal : {predict.prediction}\n\tNormalized : {predict.prediction_normalized}")
+    print(f"Prediction : \n\tNormal : {round(predict.prediction)}\n\tNormalized : {predict.prediction_normalized}")
 
 def user_input():
     if len(sys.argv) > 2:
@@ -68,6 +63,7 @@ def user_input():
         print(f"An error occurred: {e}\nExiting")
         sys.exit(1)
     
+    print(f"Input miles : {miles}")
     return miles
 
 if __name__ == "__main__":

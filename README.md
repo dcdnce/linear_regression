@@ -4,9 +4,9 @@
 - Two program
 	- Predict (class and file)
 	- Model
+		- Stop program even in plot loop
 		- Parse as method (not in constructor)
-		- Option to stop after n iterations when MSE (or coeffs?) is already optimal
-- Auto initialization with pip requirement and all
+- Auto initialization with pip requirement and all [?]
 
 Bonus
 - Precision of model

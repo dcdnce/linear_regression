@@ -5,17 +5,18 @@ import numpy as np
 import json
 
 class Model:
-	def __init__(self, data_file):
-		self.mileage, self.price = self.parse_csv(data_file)
-		self.mileage_normalized = self.normalize_array(self.mileage)
-		self.price_normalized = self.normalize_array(self.price)
+	def __init__(self):
+		self.mileage = 0
+		self.price = 0
+		self.mileage_normalized = 0
+		self.price_normalized = 0
 		self.theta0 = 0 
 		self.theta1 = 0
-		self.m = len(self.mileage)
+		self.m = 0
 		self.figure = None
 		self.init_plots()
 
-	def parse_csv(self, data_file):
+	def parse_data(self, data_file):
 		mileage = []
 		price = []
 		try:
@@ -28,14 +29,19 @@ class Model:
 						mileage.append(mileage_value)
 						price.append(price_value)
 					except ValueError:
-						print(f"Data file: Non numeric value ignored : {row}")
+						print(f"Data file: Error value ignored : {row}")
 		except Exception as e:
 			print(f"An error occurred: {e}\nExiting")
 			sys.exit(1)
 		
 		print(f"Data file: mileage (min,max) : {min(mileage)}, {max(mileage)}")
 		print(f"Data file: price (min,max) : {min(price)}, {max(price)}")
-		return [mileage, price]
+
+		self.mileage = mileage
+		self.price = price 
+		self.mileage_normalized = self.normalize_array(mileage)
+		self.price_normalized = self.normalize_array(price)
+		self.m = len(mileage)
 
 	def normalize_array(self, a):
 		return [((x - min(a)) / (max(a) - min(a)) )for x in a]
@@ -149,12 +155,12 @@ class Model:
 def main():
 	data_file_name, iterations, learning_rate = user_input()
 
-	model = Model(data_file_name)
+	model = Model()
+	model.parse_data(data_file_name)
 	print(f"Mean squared error before regression: {model.compute_MSE(model.theta0, model.theta1)}")
 	model.gradient_descent(iterations, learning_rate)
 	print(f"Gradient descent: theta0 (b) = {model.theta0}, theta1 (m) = {model.theta1}")
 	print(f"Mean squared error after regression: {model.compute_MSE(model.theta0, model.theta1)}")
-	# model.plot_results()
 	model.save_coefficients()
 	plt.ioff()
 	plt.show()

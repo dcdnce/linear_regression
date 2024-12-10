@@ -22,7 +22,7 @@ class Predict:
             self.price_min = data['price_min']
             self.price_max = data['price_max']
         except Exception as e:
-            print(f"Coeffs file: An error occurred: {e}")
+            print(f"Coeffs file: An error occurred: {e}\nExiting")
             sys.exit(1)
 
         print(f"Coefficients for prediction :\n\ttheta0 = {self.theta0}\n\ttheta1 = {self.theta1}")

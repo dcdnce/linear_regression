@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import json
 
+
 class Model:
 	def __init__(self):
 		self.mileage = 0
@@ -14,7 +15,11 @@ class Model:
 		self.theta1 = 0
 		self.m = 0
 		self.figure = None
+		self.stop_training = False
 		self.init_plots()
+
+	def on_close(self, event):
+		self.stop_training = True
 
 	def parse_data(self, data_file):
 		mileage = []
@@ -48,7 +53,7 @@ class Model:
 	
 	def init_plots(self):
 		plt.ion()
-		self.figure = plt.figure(figsize=(16, 6))
+		self.figure = plt.figure(figsize=(12, 4))
 		self.b_values = []
 		self.m_values = []
 		self.error_values = []
@@ -88,6 +93,11 @@ class Model:
 				patience_counter = 0
 			previous_mse = current_mse
 
+			# Check user stop
+			if self.stop_training:
+				print(f"User stopping at iteration {j}")
+				break
+
 			# Live plotting
 			if ((j % 10 == 0 or j < 10)):
 				self.plot_results(t0, t1, j)
@@ -97,6 +107,9 @@ class Model:
 	
 	def plot_results(self, t0, t1, iteration):
 		plt.clf()
+		fig = plt.gcf()
+		fig.stop_training = False 
+		fig.canvas.mpl_connect('close_event', self.on_close)
 
 		# Subplot #1 :
 		plt.subplot(1, 2, 1)
@@ -156,7 +169,7 @@ def main():
 
 	model = Model()
 	model.parse_data(data_file_name)
-	print(f"Mean squared error before regression: {model.compute_MSE(model.theta0, model.theta1)}")
+	print(f"\nMean squared error before regression: {model.compute_MSE(model.theta0, model.theta1)}")
 	model.gradient_descent(iterations, learning_rate)
 	print(f"Gradient descent: theta0 (b) = {model.theta0}, theta1 (m) = {model.theta1}")
 	print(f"Mean squared error after regression: {model.compute_MSE(model.theta0, model.theta1)}")
@@ -166,7 +179,7 @@ def main():
 
 def user_input():
 	if len(sys.argv) == 1:
-		print("Usage: python3 model.py -f <file> -i <iterations> -l <learning_rate>")
+		print("Usage: python3 model.py -f <file> -i <iterations> -l <learning_rate>\n")
 	data_file_name = "data.csv"
 	iterations = 500
 	learning_rate = 0.1
@@ -180,8 +193,8 @@ def user_input():
 			elif args[i] == "-l":
 				learning_rate = float(args[i + 1])
 			else:
-				print(f"Unknown argument: {args[i]}")
-				print("Usage: python3 model.py -f <file> -i <iterations> -l <learning_rate>")
+				print(f"\nUnknown argument: {args[i]}")
+				print("Usage: python3 model.py -f <file> -i <iterations> -l <learning_rate>\n")
 	except Exception as e:
 		print(f"An error occurred: {e}\nExiting")
 		sys.exit(1)
